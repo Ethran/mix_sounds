@@ -44,35 +44,29 @@ check(){
 
 # stowrzyć sink, aby przekierowac do niego dzięki z aplikacji:
 sink=$(pactl load-module module-null-sink sink_name=fsound sink_properties=device.description="#1_sound_from_aplication");
-
 check "creating sink: #1_sound_from_aplication";
 
 
 # przekierowac monitor stworzonego sinku na wyjscie audio aby nadal słyszeć z niego dzięk:
 sink=$(pactl load-module module-loopback source=fsound.monitor sink=$wyjscie_audio)
-
-# check if last command success
 check "directing #1_sound_from_aplication to audio output: $wyjscie_audio";
+
+
 
 # stworzyc sink aby polaczyc dzwięk z aplikacji z mikrofonem:
 sink=$(pactl load-module module-null-sink sink_name=micro_app  sink_properties=device.description="sound_from_#1_and_noise_tourch_microfone");
-
-
 check "creating sink: sound_from_#1_and_noise_tourch_microfone";
+
+
 
 # przekierowac do  micro_app dzięk z mikrofonu
 # tutaj przekierowujemy z noise toutch microfone:
 sink=$(pactl load-module module-loopback sink=micro_app source=$mikrofon);
-
-# check if last command success
 check "directing audio input: $mikrofon to sound_from_#1_and_noise_tourch_microfone";
 
-# a tu z mikrofonu:
-# pactl load-module module-loopback sink=MySink source=alsa_input.pci-0000_00_1b.0.analog-stereo
 
-# przekierowac do micro_app dziwięk z fsound (który zawiera dzwięk z aplikacji):
+
 sink=$(pactl load-module module-loopback sink=micro_app source=fsound.monitor);
-
 check "directing audio input: #1_sound_from_aplication to sound_from_#1_and_noise_tourch_microfone";
 
 
