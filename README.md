@@ -42,12 +42,7 @@ Develop/tested on Ubuntu 20.04.01 LTS
 	
 It should save between sessions;
 
-5. In pulseaudio volume control:
-	* recording
-		
-	* choose application to which you want direct sounds
-		
-	* change from default audio input to #1_sound_from_aplication
+5. In aplication (for example discord) change sound input device;
 6. All done
 
 
