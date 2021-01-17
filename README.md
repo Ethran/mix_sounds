@@ -29,7 +29,8 @@ Develop/tested on Ubuntu 20.04.01 LTS
 		↓
 	* you can do this multiple application.
 	
-it should save between sessions;
+It should save between sessions;
+
 5. In pulseaudio volume control:
 	* recording
 		↓
