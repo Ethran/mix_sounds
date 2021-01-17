@@ -49,3 +49,15 @@ It should save between sessions;
 		
 	* change from default audio input to #1_sound_from_aplication
 6. All done
+
+
+PS usefull links and commends:
+https://unix.stackexchange.com/questions/576785/redirecting-pulseaudio-sink-to-a-virtual-source
+
+
+
+pactl unload-module 
+pacmd list-sources | awk '/index:/ {print $0}; /name:/ {print $0}; /device.description/ {print $0}'
+pactl list sources
+pactl list sinks
+pactl load-module module-loopback sink=MySink source=alsa_output.pci-0000_00_1b.0.analog-stereo.monitor

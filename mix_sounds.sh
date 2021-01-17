@@ -6,7 +6,7 @@
 # before runing this script make sure that you replace microphone and audio output
 # with specific to your computer inpu/output names
 
-mikrofon="nui_mic_remap";
+mikrofon="nui_mic_denoised_out.monitor";
 wyjscie_audio="alsa_output.pci-0000_00_1b.0.analog-stereo";
 
 echo microphone:     $mikrofon;
@@ -55,7 +55,7 @@ sink=$(pactl load-module module-loopback source=fsound.monitor sink=$wyjscie_aud
 check "directing #1_sound_from_aplication to audio output: $wyjscie_audio";
 
 # stworzyc sink aby polaczyc dzwięk z aplikacji z mikrofonem:
-sink=$(pactl load-module module-null-sink sink_name=micro_app sink_properties=device.description="sound_from_#1_and_noise_tourch_microfone");
+sink=$(pactl load-module module-null-sink sink_name=micro_app  sink_properties=device.description="sound_from_#1_and_noise_tourch_microfone");
 
 
 check "creating sink: sound_from_#1_and_noise_tourch_microfone";
@@ -77,29 +77,16 @@ check "directing audio input: #1_sound_from_aplication to sound_from_#1_and_nois
 
 
 
+
+sink=$(pactl load-module module-remap-source \
+master=micro_app.monitor \
+source_properties=device.description=Computer-sound)
+echo $sink;
+check "feke microphone";
+
+
 echo "if you want clean and exit pleace type somethink: ";
 read a;
-
-
 clean;
+exit 0;
 
-
-# otwieramy pulseaudio volume control → recording → 
-# szukamy wejscia aplikacji do ktorej checmy przekazać dzięk
-# dla discord to WEBRTC VoiceEngine: recStream 
-# wybieramy zamiast wyjscia audio "sound_from_#1_and_noise_tourch_microfone"
-
-# https://unix.stackexchange.com/questions/576785/redirecting-pulseaudio-sink-to-a-virtual-source
-
-# jak cofnąć te zmiany:
-# po resecie wszystku wróci do normy
-# lub można:
-# pactl unload-module (w odwrotnej kolejności numerki które się wcześnij pojawiły)
-
-#inne przydatne komendy:
-#pacmd list-sources | awk '/index:/ {print $0}; /name:/ {print $0}; /device.description/ {print $0}'
-# wypisuje co możemy przekierowac do sink
-# pactl list sources
-# pactl list sinks
-#przekierowanie z komputera wszystkich dzwięków
-#pactl load-module module-loopback sink=MySink source=alsa_output.pci-0000_00_1b.0.analog-stereo.monitor
