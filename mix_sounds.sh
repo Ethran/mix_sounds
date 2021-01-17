@@ -1,7 +1,7 @@
 #!/bin/bash
 # skrypcik do mixowania mikrofonu wraz z dziękiem z jednej lub kilku aplikacji
 # autor: 	Wikor Wichrowski
-# version:  	1.2
+# version:  	1.3
 
 echo "before runing this script make sure that you replace microphone and audio output";
 echo "with specific to your computer inpu/output names";
