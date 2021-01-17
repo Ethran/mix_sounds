@@ -12,6 +12,16 @@ Develop/tested on Ubuntu 20.04.01 LTS
 ### How to use?
 
 1. Change name of microphone and audio output to specific to your computer input/output names
+	* How to get name of audio divices?
+	Run command to obtain every possible sources
+	
+	```pacmd list-sources | awk '/index:/ {print $0}; /name:/ {print $0}; /device.description/ {print $0}'```
+	
+	* choose your microphone input and headphones/speekers output
+	* change varibles:
+		microphone and audio_output
+	to this names
+	
 2. Give permission for executing file:
 
 	``` chmod +x mix_sounds.sh```
