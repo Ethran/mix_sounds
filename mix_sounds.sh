@@ -1,16 +1,16 @@
 #!/bin/bash
 # skrypcik do mixowania mikrofonu wraz z dziękiem z jednej lub kilku aplikacji
 # autor: 	Wikor Wichrowski
-# version:  	1.4
+# version:  	1.5
 
 # before runing this script make sure that you replace microphone and audio output
 # with specific to your computer inpu/output names
 
-mikrofon="nui_mic_denoised_out.monitor";
-wyjscie_audio="alsa_output.pci-0000_00_1b.0.analog-stereo";
+microphone="nui_mic_denoised_out.monitor";
+audio_output="alsa_output.pci-0000_00_1b.0.analog-stereo";
 
-echo microphone:     $mikrofon;
-echo audio_output:   $wyjscie_audio;
+echo microphone:     $microphone;
+echo audio_output:   $audio_output;
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -48,8 +48,8 @@ check "creating sink: #1_sound_from_aplication";
 
 
 # przekierowac monitor stworzonego sinku na wyjscie audio aby nadal słyszeć z niego dzięk:
-sink=$(pactl load-module module-loopback source=fsound.monitor sink=$wyjscie_audio)
-check "directing #1_sound_from_aplication to audio output: $wyjscie_audio";
+sink=$(pactl load-module module-loopback source=fsound.monitor sink=$audio_output)
+check "directing #1_sound_from_aplication to audio output: $audio_output";
 
 
 
@@ -61,8 +61,8 @@ check "creating sink: sound_from_#1_and_noise_tourch_microfone";
 
 # przekierowac do  micro_app dzięk z mikrofonu
 # tutaj przekierowujemy z noise toutch microfone:
-sink=$(pactl load-module module-loopback sink=micro_app source=$mikrofon);
-check "directing audio input: $mikrofon to sound_from_#1_and_noise_tourch_microfone";
+sink=$(pactl load-module module-loopback sink=micro_app source=$microphone);
+check "directing audio input: $microphone to sound_from_#1_and_noise_tourch_microfone";
 
 
 
