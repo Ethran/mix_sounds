@@ -14,23 +14,36 @@ echo audio_output:   $wyjscie_audio;
 
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
-
 #declarete table for keeping sinks numbers:
 declare -a sinks_nubers;
+
+
+clean(){
+   for i in "${sinks_nubers[@]}"
+   do
+     echo cleaning sink $i;
+     pactl unload-module $i;
+   done
+}
+check(){
+# check if last command success
+  RESULT=$?
+  if [ $RESULT -eq 0 ]; then
+     sinks_nubers+=($sink);
+     echo success during: $1;
+  else
+     echo error during: $1;
+     clean;
+     exit -1;
+  fi
+}
+
+
 
 # stowrzyć sink, aby przekierowac do niego dzięki z aplikacji:
 sink=$(pactl load-module module-null-sink sink_name=fsound sink_properties=device.description="#1_sound_from_aplication");
 # echo sink: $sink;
-# check if last command success
-place=1;
-RESULT=$?
-if [ $RESULT -eq 0 ]; then
-  sinks_nubers+=($sink);
-  echo success in place $place;
-else
-  echo failed in place $place;
-  exit $place;
-fi
+check "creating sink: #1_sound_from_aplication";
 
 echo -e "${GREEN}pleace open /pulseaudio volume control/";
 echo "and go to playbacks → choose aplication for whith you want redirect sounds";
@@ -46,62 +59,30 @@ echo -e "if you arleady did it should be saved ${NC}";
 sink=$(pactl load-module module-loopback source=fsound.monitor sink=$wyjscie_audio)
 #echo sink: $sink;
 # check if last command success
-place=2;
-RESULT=$?
-if [ $RESULT -eq 0 ]; then
-  sinks_nubers+=("$sink");
-  echo success in place $place;
-else
-  echo failed in place $place;
-  exit $place;
-fi
+check "directing #1_sound_from_aplication to audio output: $wyjscie_audio";
 
 # stworzyc sink aby polaczyc dzwięk z aplikacji z mikrofonem:
 sink=$(pactl load-module module-null-sink sink_name=micro_app sink_properties=device.description="sound_from_#1_and_noise_tourch_microfone");
 #echo sink: $sink;
-# check if last command success
-place=3;
-RESULT=$?
-if [ $RESULT -eq 0 ]; then
-  sinks_nubers+=("$sink");
-  echo success in place $place;
-else
-  echo failed in place $place;
-  exit $place;
-fi
+
+check "creating sink: sound_from_#1_and_noise_tourch_microfone";
 
 # przekierowac do  micro_app dzięk z mikrofonu
 # tutaj przekierowujemy z noise toutch microfone:
 sink=$(pactl load-module module-loopback sink=micro_app source=$mikrofon);
 #echo sink: $sink;
 # check if last command success
-place=3;
-RESULT=$?
-if [ $RESULT -eq 0 ]; then
-  sinks_nubers+=("$sink");
-  echo success in place $place;
-else
-  echo failed in place $place;
-  exit $place;
-fi
+check "directing audio input: $mikrofon to sound_from_#1_and_noise_tourch_microfone";
 
 # a tu z mikrofonu:
 # pactl load-module module-loopback sink=MySink source=alsa_input.pci-0000_00_1b.0.analog-stereo
 
 # przekierowac do micro_app dziwięk z fsound (który zawiera dzwięk z aplikacji):
 sink=$(pactl load-module module-loopback sink=micro_app source=fsound.monitor);
+
+check "directing audio input: #1_sound_from_aplication to sound_from_#1_and_noise_tourch_microfone";
 #echo sink: $sink;
 # check if last command success
-place=4;
-RESULT=$?
-if [ $RESULT -eq 0 ]; then
-  sinks_nubers+=("$sink");
-  echo success in place $place;
-else
-  echo failed in place $place;
-  exit $place;
-fi
-
 #exit 0;
 
 # for loop that iterates over each element in arr
@@ -121,11 +102,7 @@ echo -e "${GREEN} if something went wrong you can just restart your computer to 
 echo "or you can clean sinks manualy";
 echo -e "by executing comend: pactl unload-module number_of_sinc ${NC} ";
 
-for i in "${sinks_nubers[@]}"
-do
-    echo cleaning sink $i;
-    pactl unload-module $i;
-done
+clean;
 
 
 # otwieramy pulseaudio volume control → recording → 
